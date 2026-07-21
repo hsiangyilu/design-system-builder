@@ -1,5 +1,6 @@
 // tailwind.config.ts
 // Y2K Snap — Design Tokens
+// Generated from tokens.json v1.0.0 — do not edit values by hand
 // 把這個檔案的 theme.extend 內容合併到你的 tailwind.config.ts
 
 import type { Config } from 'tailwindcss'

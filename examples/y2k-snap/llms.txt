@@ -1,0 +1,70 @@
+# Y2K Snap — Design System Spec (for AI agents)
+# Token version: 1.0.0  ← must match $version in tokens.json
+# If this version does not match tokens.json, STOP and ask the user to regenerate this file.
+
+## Core Rule: Closed Set
+
+You MUST only use the named tokens listed below when generating any UI.
+- NEVER invent hex colors, even plausible-looking ones.
+- NEVER use Tailwind arbitrary values: `bg-[#...]`, `text-[13px]`, `w-[...]`, `p-[...]` are all forbidden.
+- NEVER hard-code px font sizes. Use the typography tokens.
+- NEVER use the primitive scales (`gy-*`, `ev-*`, `neutral-*`) directly in components — they exist only to define the semantic tokens below.
+- If no token fits, STOP and ask the user. Do not approximate.
+
+## Color Tokens (semantic layer — the only layer components may reference)
+
+Format: token → Tailwind class → usage rule
+
+brand.primary        → bg-brand / text-brand            → primary actions, brand moments (green-yellow #B8FF3C)
+brand.primary-hover  → bg-brand-hover                   → hover state of primary actions only
+brand.primary-active → bg-brand-active                  → pressed state of primary actions only
+accent.default       → bg-accent / text-accent          → secondary emphasis, highlights (electric-violet #9B5DFF)
+accent.hover         → bg-accent-hover                  → hover state of accent only
+accent.active        → bg-accent-active                 → pressed state of accent only
+background.base      → bg-bg-base                       → page background (#F0F0F0)
+background.surface   → bg-bg-surface                    → cards, panels, sheets (#FFFFFF)
+background.overlay   → (modal/sheet scrim)              → modal backdrop only; use the overlay token rgba(10,10,10,.6), never invent another dark rgba
+text.primary         → text-content-primary             → body text (default for all copy)
+text.secondary       → text-content-secondary           → captions, meta, helper text
+text.on-brand        → text-content-on-brand            → any text sitting on brand.primary (near-black — brand green is light)
+text.on-accent       → text-content-on-accent           → any text sitting on accent (white — violet is dark)
+text.disabled        → text-content-disabled            → disabled states only
+border.default       → border-border                    → dividers, input borders
+border.strong        → border-border-strong             → emphasized boundaries
+border.brand         → border-border-brand              → brand-colored outlines / focus rings
+border.accent        → border-border-accent             → accent-colored outlines
+feedback.success     → text-feedback-success / bg-feedback-success  → success states only
+feedback.error       → text-feedback-error / bg-feedback-error      → errors, destructive actions only
+feedback.warning     → text-feedback-warning / bg-feedback-warning  → warnings only
+
+## Typography Tokens
+
+display-hero → text-display-hero (font-display) → h1, one per page maximum
+display-xl   → text-display-xl   (font-display) → h2, section heroes
+heading-lg   → text-heading-lg   (font-display) → h3, page titles
+heading-md   → text-heading-md   (font-display) → h4, block titles
+heading-sm   → text-heading-sm   (font-display) → h5, card titles
+label-lg     → text-label-lg     (font-body)    → h6, nav items, buttons
+body-md      → text-body-md      (font-body)    → p, all body copy (16px base)
+body-sm      → text-body-sm      (font-body)    → small, helper text
+caption      → text-caption      (font-body)    → meta, timestamps (minimum size — 9px)
+
+## Do
+
+- DO use `font-display` (Bebas Neue) only for display-* and heading-* tokens.
+- DO use `font-body` (DM Sans) for everything from label-lg down.
+- DO put near-black text (`text-content-on-brand`) on brand green fills, and white text (`text-content-on-accent`) on accent violet fills.
+- DO use semantic color tokens; primitive scale values (`gy-500`, `ev-400`, `neutral-950`) are for token definition only, never in components.
+- DO run `node audit-tokens.mjs . tokens.json` after generating code and fix every reported violation before presenting the result.
+
+## Don't
+
+- DON'T use `font-display` for body copy or anything below label-lg. Bebas Neue is all-caps and unreadable at length.
+- DON'T put white text on brand green (#B8FF3C) — contrast fails. On-brand text is near-black by rule.
+- DON'T use feedback colors for decoration; they carry state meaning only.
+- DON'T use brand green to signal success or vice-versa. `feedback.success` (#A3FC11) is deliberately close to brand green but means "success," not "brand" — keep them semantically distinct.
+
+# Distilled rationale rules
+# ↑ Every design decision the team makes must be distilled into an
+#   imperative rule and appended here. Example:
+#   - NEVER use `gy-300` for text. Decorative use only (contrast fails on light bg).
