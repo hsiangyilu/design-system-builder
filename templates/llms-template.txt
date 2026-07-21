@@ -1,0 +1,65 @@
+# {PROJECT_NAME} — Design System Spec (for AI agents)
+# Token version: {TOKEN_VERSION}  ← must match $version in tokens.json
+# If this version does not match tokens.json, STOP and ask the user to regenerate this file.
+
+## Core Rule: Closed Set
+
+You MUST only use the named tokens listed below when generating any UI.
+- NEVER invent hex colors, even plausible-looking ones.
+- NEVER use Tailwind arbitrary values: `bg-[#...]`, `text-[13px]`, `w-[...]`, `p-[...]` are all forbidden.
+- NEVER hard-code px font sizes. Use the typography tokens.
+- If no token fits, STOP and ask the user. Do not approximate.
+
+## Color Tokens (semantic layer — the only layer components may reference)
+
+Format: token → Tailwind class → usage rule
+
+brand.primary        → bg-brand / text-brand      → primary actions, brand moments
+brand.primary-hover  → bg-brand-hover             → hover state of primary actions only
+brand.primary-active → bg-brand-active            → pressed state only
+accent.default       → bg-accent                  → secondary emphasis, highlights
+background.base      → bg-base                    → page background
+background.surface   → bg-surface                 → cards, panels
+background.overlay   → bg-overlay                 → modals, sheets
+text.primary         → text-content               → body text (default for all copy)
+text.secondary       → text-content-secondary     → captions, meta, helper text
+text.on-brand        → text-on-brand              → any text sitting on brand.primary
+text.on-accent       → text-on-accent             → any text sitting on accent
+text.disabled        → text-content-disabled      → disabled states only
+border.default       → border-default             → dividers, input borders
+border.strong        → border-strong              → emphasized boundaries
+feedback.success     → text-success / bg-success  → success states only
+feedback.error       → text-error / bg-error      → errors, destructive actions only
+feedback.warning     → text-warning / bg-warning  → warnings only
+
+{ADD_PROJECT_SPECIFIC_TOKENS}
+
+## Typography Tokens
+
+display/hero   → text-display-hero    → h1, one per page maximum
+display/xl     → text-display-xl      → h2, section heroes
+heading/lg     → text-heading-lg      → h3, page titles
+heading/md     → text-heading-md      → h4, block titles
+heading/sm     → text-heading-sm      → h5, card titles
+label/lg       → text-label-lg        → h6, nav items, buttons
+body/md        → text-body-md         → p, all body copy (16px base)
+body/sm        → text-body-sm         → small, helper text
+caption        → text-caption         → meta, timestamps (minimum size)
+
+## Do
+
+- DO use `font-display` only for display/* and heading/* tokens.
+- DO use `font-body` for everything from label/lg down.
+- DO use semantic color tokens; primitive scale values (e.g. `blue-400`) are for token definition only, never in components.
+- DO run `node scripts/audit-tokens.mjs` after generating code and fix every reported violation before presenting the result.
+
+## Don't
+
+- DON'T use display font for body copy or anything below label/lg.
+- DON'T place text.secondary on background.overlay (contrast fails).
+- DON'T use feedback colors for decoration; they carry state meaning only.
+
+{DISTILLED_RATIONALE_RULES}
+# ↑ Every design decision the team makes must be distilled into an
+#   imperative rule and appended here. Example:
+#   - NEVER use `primary-300` for text. Decorative use only (contrast 3.8:1).
